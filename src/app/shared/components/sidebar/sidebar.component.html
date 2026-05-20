@@ -1,0 +1,13 @@
+<aside class="sidebar">
+  <div class="logo">
+    <h3>SmartPark</h3>
+  </div>
+  <nav>
+    <a *ngFor="let item of menuItems" 
+       [routerLink]="item.path" 
+       routerLinkActive="active">
+      <span class="icon">{{ item.icon }}</span>
+      {{ item.label }}
+    </a>
+  </nav>
+</aside>

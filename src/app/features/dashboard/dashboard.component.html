@@ -1,0 +1,63 @@
+<p>dashboard works!</p>
+<div class="dashboard">
+  <div class="dashboard-header">
+    <h1>Dashboard</h1>
+    <button (click)="loadDashboard()" class="refresh-btn">↻ Refresh</button>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading">
+    <div class="spinner"></div>
+    <p>Loading dashboard...</p>
+  </div>
+
+  <!-- Error -->
+  <div *ngIf="error && !loading" class="error-message">
+    {{ error }}
+  </div>
+
+  <!-- Dashboard Content -->
+  <div *ngIf="dashboardData && !loading" class="dashboard-content">
+    
+    <!-- Stats Cards -->
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="icon">🏢</div>
+        <div class="value">{{ dashboardData.totalParkingLots }}</div>
+        <div class="label">Total Parking Lots</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="icon">🅿️</div>
+        <div class="value">{{ dashboardData.availableSlots }}</div>
+        <div class="label">Available Slots</div>
+        <small>out of {{ dashboardData.totalSlots }}</small>
+      </div>
+
+      <div class="stat-card">
+        <div class="icon">📍</div>
+        <div class="value">{{ dashboardData.activeBookings }}</div>
+        <div class="label">Active Bookings</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="icon">💰</div>
+        <div class="value">৳{{ dashboardData.totalRevenueToday }}</div>
+        <div class="label">Today's Revenue</div>
+      </div>
+    </div>
+
+    <!-- Occupancy -->
+    <div class="occupancy-card">
+      <h3>Current Occupancy Rate</h3>
+      <div class="occupancy-rate" 
+           [ngClass]="getOccupancyColor(dashboardData.occupancyRate)">
+        {{ dashboardData.occupancyRate }}%
+      </div>
+      <div class="progress-bar">
+        <div class="progress" [style.width.%]="dashboardData.occupancyRate"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
