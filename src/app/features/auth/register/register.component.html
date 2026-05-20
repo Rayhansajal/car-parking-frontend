@@ -1,0 +1,49 @@
+<div class="register-container">
+  <div class="register-card">
+    <h2>Create Account</h2>
+    <p class="subtitle">Join SmartPark as a Driver or Operator</p>
+
+    <form (ngSubmit)="onRegister()">
+
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" [(ngModel)]="registerData.name" name="name" required placeholder="Enter your full name">
+      </div>
+
+      <div class="form-group">
+        <label>Email Address</label>
+        <input type="email" [(ngModel)]="registerData.email" name="email" required placeholder="your@email.com">
+      </div>
+
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" [(ngModel)]="registerData.phone" name="phone" placeholder="+880 1XXXXXXXXX">
+      </div>
+
+      <div class="form-group">
+        <label>Password</label>
+        <input type="password" [(ngModel)]="registerData.password" name="password" required placeholder="Create a strong password">
+      </div>
+
+      <div class="form-group">
+        <label>Register As</label>
+        <select [(ngModel)]="registerData.role" name="role" required>
+          <option value="DRIVER">Driver</option>
+          <option value="OPERATOR">Operator</option>
+        </select>
+      </div>
+
+      <button type="submit" [disabled]="loading" class="register-btn">
+        {{ loading ? 'Creating Account...' : 'Register' }}
+      </button>
+
+      <div *ngIf="error" class="error-message">{{ error }}</div>
+      <div *ngIf="success" class="success-message">{{ success }}</div>
+    </form>
+
+    <p class="login-link">
+      Already have an account? 
+      <a routerLink="/auth/login">Login here</a>
+    </p>
+  </div>
+</div>

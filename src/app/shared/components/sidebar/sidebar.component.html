@@ -1,13 +1,28 @@
 <aside class="sidebar">
-  <div class="logo">
-    <h3>SmartPark</h3>
-  </div>
-  <nav>
-    <a *ngFor="let item of menuItems" 
-       [routerLink]="item.path" 
-       routerLinkActive="active">
-      <span class="icon">{{ item.icon }}</span>
-      {{ item.label }}
+  <nav class="menu">
+    <a routerLink="/dashboard" routerLinkActive="active">
+      <span class="icon">🏠</span>
+      <span>Dashboard</span>
+    </a>
+    <a routerLink="/bookings/my" routerLinkActive="active">
+      <span class="icon">📅</span>
+      <span>My Bookings</span>
+    </a>
+    <a routerLink="/lots" routerLinkActive="active">
+      <span class="icon">🏢</span>
+      <span>Parking Lots</span>
+    </a>
+    <a routerLink="/slots" routerLinkActive="active">
+      <span class="icon">🅿️</span>
+      <span>Parking Slots</span>
+    </a>
+    <a routerLink="/vehicles" routerLinkActive="active">
+      <span class="icon">🚗</span>
+      <span>My Vehicles</span>
+    </a>
+    <a routerLink="/reports" routerLinkActive="active">
+      <span class="icon">📊</span>
+      <span>Reports</span>
     </a>
   </nav>
 </aside>

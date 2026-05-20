@@ -1,8 +1,25 @@
 <header>
-  <div class="header-content">
-    <h2>Smart Car Park</h2>
-    <div class="user-section">
-      <span>Welcome, Admin</span>
+  <div class="header-container">
+    <div class="logo">
+      <span class="logo-icon">🅿️</span>
+      <h2>SmartPark</h2>
+    </div>
+
+    <div class="header-right">
+      <div class="user-info">
+        <div class="avatar">
+          {{ userName.charAt(0).toUpperCase() }}
+        </div>
+        <div class="user-details">
+          <span class="user-name">{{ userName }}</span>
+          <span class="user-email">{{ userEmail }}</span>
+          <span class="user-role" [class.admin]="userRole === 'Admin'" 
+                                [class.driver]="userRole === 'Driver'">
+            {{ userRole }}
+          </span>
+        </div>
+      </div>
+
       <button (click)="logout()" class="logout-btn">Logout</button>
     </div>
   </div>
