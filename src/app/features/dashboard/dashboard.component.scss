@@ -193,3 +193,20 @@
   border-radius: 12px;
   margin: 2rem 0;
 }
+.welcome-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2.5rem;
+
+  h1 {
+    font-size: 2.6rem;
+    font-weight: 700;
+    color: #1e2937;
+    margin: 0;
+
+    span {
+      color: #3b82f6;
+    }
+  }
+}

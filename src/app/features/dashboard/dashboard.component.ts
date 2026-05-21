@@ -2,6 +2,7 @@ import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { DashboardService } from './dashboard.service';
 import { DashboardResponseDTO } from '../../models/dashboard.model';
+import { AuthService } from '../../core/services/auth.service';
 
 @Component({
   selector: 'app-dashboard',
@@ -14,10 +15,29 @@ export class DashboardComponent implements OnInit {
   loading = true;
   error = '';
 
-  constructor(private dashboardService: DashboardService) {}
+  // User Info
+  userName: string = 'User';
+
+  constructor(
+    private dashboardService: DashboardService,
+    private authService: AuthService
+  ) {}
 
   ngOnInit() {
+    this.loadUserInfo();
     this.loadDashboard();
+  }
+
+  private loadUserInfo() {
+    const token = this.authService.getToken();
+    if (token) {
+      try {
+        const payload = JSON.parse(atob(token.split('.')[1]));
+        this.userName = payload.name || payload.sub || 'User';
+      } catch (e) {
+        console.error('Failed to decode token');
+      }
+    }
   }
 
   loadDashboard() {
