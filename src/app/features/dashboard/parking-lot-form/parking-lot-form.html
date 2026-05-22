@@ -1,61 +1,68 @@
-<div class="form-container">
-  <h2>Create New Parking Lot</h2>
-  
-  <form (ngSubmit)="onSubmit()" #lotForm="ngForm">
+<div class="form-page">
+  <div class="form-container">
+    <h2>Create New Parking Lot</h2>
     
-    <div class="form-group">
-      <label>Parking Lot Name <span class="required">*</span></label>
-      <input type="text" [(ngModel)]="formData.name" name="name" required>
-    </div>
-
-    <div class="form-group">
-      <label>Full Address <span class="required">*</span></label>
-      <input type="text" [(ngModel)]="formData.address" name="address" required>
-    </div>
-
-    <div class="form-group">
-      <label>City <span class="required">*</span></label>
-      <input type="text" [(ngModel)]="formData.city" name="city" required>
-    </div>
-
-    <div class="row">
+    <form (ngSubmit)="onSubmit()">
+      
       <div class="form-group">
-        <label>Latitude</label>
-        <input type="number" [(ngModel)]="formData.latitude" name="latitude" step="0.000001">
+        <label>Parking Lot Name <span class="required">*</span></label>
+        <input type="text" [(ngModel)]="formData.name" name="name" required>
       </div>
+
       <div class="form-group">
-        <label>Longitude</label>
-        <input type="number" [(ngModel)]="formData.longitude" name="longitude" step="0.000001">
+        <label>Full Address <span class="required">*</span></label>
+        <input type="text" [(ngModel)]="formData.address" name="address" required>
       </div>
-    </div>
 
-    <div class="form-group">
-      <label>Total Floors</label>
-      <input type="number" [(ngModel)]="formData.totalFloors" name="totalFloors" min="1" value="1">
-    </div>
+      <div class="form-group">
+        <label>City <span class="required">*</span></label>
+        <input type="text" [(ngModel)]="formData.city" name="city" required>
+      </div>
 
-    <div class="form-group">
-      <label>Hourly Rate (৳) <span class="required">*</span></label>
-      <input type="number" [(ngModel)]="formData.hourlyRate" name="hourlyRate" step="0.01" required>
-    </div>
+      <div class="row">
+        <div class="form-group">
+          <label>Latitude</label>
+          <input type="number" [(ngModel)]="formData.latitude" name="latitude" step="0.000001">
+        </div>
+        <div class="form-group">
+          <label>Longitude</label>
+          <input type="number" [(ngModel)]="formData.longitude" name="longitude" step="0.000001">
+        </div>
+      </div>
 
-    <div class="form-group">
-      <label>Daily Rate (৳) <small>(Optional)</small></label>
-      <input type="number" [(ngModel)]="formData.dailyRate" name="dailyRate" step="0.01">
-    </div>
+      <div class="form-group">
+        <label>Total Floors</label>
+        <input type="number" [(ngModel)]="formData.totalFloors" name="totalFloors" min="1">
+      </div>
 
-    <div class="form-group">
-      <label>
-        <input type="checkbox" [(ngModel)]="formData.enabled" name="enabled">
-        Parking Lot is Active
-      </label>
-    </div>
+      <div class="form-group">
+        <label>Hourly Rate (৳) <span class="required">*</span></label>
+        <input type="number" [(ngModel)]="formData.hourlyRate" name="hourlyRate" step="0.01" required>
+      </div>
 
-    <div class="form-actions">
-      <button type="button" class="btn-cancel" (click)="cancel()">Cancel</button>
-      <button type="submit" class="btn-save" [disabled]="lotForm.invalid">
-        Create Parking Lot
-      </button>
-    </div>
-  </form>
+      <div class="form-group">
+        <label>Daily Rate (৳)</label>
+        <input type="number" [(ngModel)]="formData.dailyRate" name="dailyRate" step="0.01">
+      </div>
+
+      <div class="form-group checkbox-group">
+        <label>
+          <input type="checkbox" [(ngModel)]="formData.enabled" name="enabled">
+          Parking Lot is Active
+        </label>
+      </div>
+
+      <div *ngIf="success" class="success-message">{{ success }}</div>
+      <div *ngIf="error" class="error-message">{{ error }}</div>
+
+      <div class="form-actions">
+        <button type="button" class="btn-cancel" (click)="cancel()" [disabled]="loading">
+          Cancel
+        </button>
+        <button type="submit" class="btn-save" [disabled]="loading">
+          {{ loading ? 'Creating...' : 'Create Parking Lot' }}
+        </button>
+      </div>
+    </form>
+  </div>
 </div>

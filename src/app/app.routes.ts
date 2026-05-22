@@ -30,16 +30,16 @@ export const routes: Routes = [
         loadComponent: () => import('./features/parking-lots/parking-lots.component')
                              .then(m => m.ParkingLotsComponent)
       },
-      // {
-      //   path: 'parking-lots/create',
-      //   loadComponent: () => import('./features/parking-lots/parking-lot-form/parking-lot-form.component')
-      //                        .then(m => m.ParkingLotFormComponent)
-      // },
-      // {
-      //   path: 'parking-lots/:id/edit',
-      //   loadComponent: () => import('./features/parking-lots/parking-lot-form/parking-lot-form.component')
-      //                        .then(m => m.ParkingLotFormComponent)
-      // },
+{
+    path: 'parking-lots/create',
+    loadComponent: () => import('./features/dashboard/parking-lot-form/parking-lot-form')
+                        .then(m => m.ParkingLotFormComponent)
+},
+{
+    path: 'parking-lots/:id/edit',
+    loadComponent: () => import('./features/dashboard/parking-lot-form/parking-lot-form')
+                        .then(m => m.ParkingLotFormComponent)
+},
 
       // // ==================== PARKING SLOTS ====================
       // {

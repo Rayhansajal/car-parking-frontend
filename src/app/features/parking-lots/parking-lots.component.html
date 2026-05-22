@@ -6,10 +6,16 @@
       <h1>Parking Lots</h1>
       <p class="subtitle">Manage all your parking locations</p>
     </div>
-    <button class="btn-primary" (click)="createNewLot()">
-      <span>+</span> New Parking Lot
-    </button>
+    
+    <!-- Create Button - Only for Admin -->
+<button 
+  *ngIf="isAdmin()" 
+  class="btn-primary" 
+  (click)="createNewLot()">
+  <span>+</span> New Parking Lot
+</button>
   </div>
+
 
   <!-- Search Bar -->
   <div class="search-container">
@@ -29,8 +35,13 @@
     <p>Loading parking lots...</p>
   </div>
 
-  <!-- Lots Grid -->
-  <div class="lots-grid" *ngIf="!loading">
+  <!-- Error -->
+  <div *ngIf="error && !loading" class="error-message">
+    {{ error }}
+  </div>
+
+  <!-- Parking Lots Grid -->
+  <div class="lots-grid" *ngIf="!loading && lots.length > 0">
     <div class="lot-card" *ngFor="let lot of lots">
       <div class="lot-header">
         <h3>{{ lot.name }}</h3>
@@ -42,32 +53,22 @@
       </div>
       
       <div class="lot-body">
-        <p class="address">
-          📍 {{ lot.address }}, {{ lot.city }}
-        </p>
-        <p class="rate">
-          <strong>Hourly Rate:</strong> ৳{{ lot.hourlyRate }}
-        </p>
+        <p class="address">📍 {{ lot.address }}, {{ lot.city }}</p>
+        <p class="rate"><strong>Hourly Rate:</strong> ৳{{ lot.hourlyRate }}</p>
       </div>
 
       <div class="lot-footer">
-        <button class="btn-edit" (click)="editLot(lot.id)">
-          Edit
-        </button>
-        <button class="btn-delete" (click)="deleteLot(lot.id)">
-          Delete
-        </button>
+        <button class="btn-edit" (click)="editLot(lot.id)">Edit</button>
+        <button class="btn-delete" (click)="deleteLot(lot.id)">Delete</button>
       </div>
     </div>
   </div>
 
   <!-- Empty State -->
-  <div *ngIf="lots.length === 0 && !loading" class="empty-state">
+  <div *ngIf="!loading && lots.length === 0 && !error" class="empty-state">
     <div class="empty-icon">🅿️</div>
     <h3>No parking lots found</h3>
     <p>Try adjusting your search or add a new parking lot.</p>
-    <button class="btn-primary" (click)="createNewLot()">
-      + Add New Parking Lot
-    </button>
   </div>
+
 </div>

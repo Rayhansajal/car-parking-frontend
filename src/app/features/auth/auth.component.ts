@@ -11,7 +11,7 @@ import { AuthService } from '../../core/services/auth.service';
   styleUrl: './auth.component.scss'
 })
 export class AuthComponent {
- activeTab: 'login' | 'register' = 'login';
+  activeTab: 'login' | 'register' = 'login';
 
   // Login Form
   loginData = {
@@ -48,7 +48,23 @@ export class AuthComponent {
     this.error = '';
 
     this.authService.login(this.loginData).subscribe({
-      next: () => {
+      next: (response: any) => {
+        // ✅ IMPORTANT: Save user data properly
+        if (response.user) {
+          localStorage.setItem('userName', response.user.name || response.user.username || 'User');
+          localStorage.setItem('userRole', response.user.role || response.user.roles?.[0] || 'Driver');
+          localStorage.setItem('userEmail', response.user.email || '');
+          localStorage.setItem('token', response.token || '');
+        } else if (response.data) {
+          // Handle different response structure
+          const user = response.data.user || response.data;
+          localStorage.setItem('userName', user.name || 'User');
+          localStorage.setItem('userRole', user.role || 'Driver');
+          localStorage.setItem('userEmail', user.email || '');
+        }
+
+        console.log('✅ Login successful. Role saved:', localStorage.getItem('userRole'));
+
         this.router.navigate(['/dashboard']);
       },
       error: (err) => {
@@ -66,7 +82,7 @@ export class AuthComponent {
     this.authService.register(this.registerData).subscribe({
       next: (response) => {
         this.success = 'Registration successful! You can now login.';
-        this.switchTab('login'); // Switch to login tab after successful register
+        this.switchTab('login');
       },
       error: (err) => {
         this.error = err.error?.message || 'Registration failed';
@@ -75,5 +91,4 @@ export class AuthComponent {
       complete: () => this.loading = false
     });
   }
-
 }
