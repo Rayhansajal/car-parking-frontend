@@ -23,7 +23,49 @@ export const routes: Routes = [
         loadComponent: () => import('./features/dashboard/dashboard.component')
                              .then(m => m.DashboardComponent) 
       },
-      // Future routes will go here
+
+      // ==================== PARKING LOTS ====================
+      {
+        path: 'parking-lots',
+        loadComponent: () => import('./features/parking-lots/parking-lots.component')
+                             .then(m => m.ParkingLotsComponent)
+      },
+      // {
+      //   path: 'parking-lots/create',
+      //   loadComponent: () => import('./features/parking-lots/parking-lot-form/parking-lot-form.component')
+      //                        .then(m => m.ParkingLotFormComponent)
+      // },
+      // {
+      //   path: 'parking-lots/:id/edit',
+      //   loadComponent: () => import('./features/parking-lots/parking-lot-form/parking-lot-form.component')
+      //                        .then(m => m.ParkingLotFormComponent)
+      // },
+
+      // // ==================== PARKING SLOTS ====================
+      // {
+      //   path: 'parking-slots',
+      //   loadComponent: () => import('./features/parking-slots/parking-slot-list/parking-slot-list.component')
+      //                        .then(m => m.ParkingSlotListComponent)
+      // },
+      // {
+      //   path: 'parking-slots/create',
+      //   loadComponent: () => import('./features/parking-slots/parking-slot-form/parking-slot-form.component')
+      //                        .then(m => m.ParkingSlotFormComponent)
+      // },
+
+      // // ==================== BOOKINGS ====================
+      // {
+      //   path: 'bookings',
+      //   loadComponent: () => import('./features/bookings/booking-list/booking-list.component')
+      //                        .then(m => m.BookingListComponent)
+      // },
+      // {
+      //   path: 'my-bookings',
+      //   loadComponent: () => import('./features/bookings/my-bookings/my-bookings.component')
+      //                        .then(m => m.MyBookingsComponent)
+      // },
+
+      // Future routes can be added here
     ]
   },
   {

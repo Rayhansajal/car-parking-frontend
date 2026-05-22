@@ -16,3 +16,15 @@
   background-color: #f8f9fc;
   overflow-y: auto;
 }
+.layout-body {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+.content-area {
+  flex: 1;
+  padding: 2rem;
+  background-color: #f8fafc;
+  overflow-y: auto;
+}

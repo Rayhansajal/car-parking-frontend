@@ -1,0 +1,218 @@
+.parking-lots-page {
+  padding: 2rem;
+  background-color: #f8fafc;
+  min-height: 100%;
+}
+
+/* Page Header */
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.header-content h1 {
+  font-size: 2.4rem;
+  font-weight: 700;
+  color: #1e2937;
+  margin: 0;
+}
+
+.subtitle {
+  color: #64748b;
+  margin: 0.3rem 0 0 0;
+  font-size: 1.05rem;
+}
+
+/* Search Bar */
+.search-container {
+  margin-bottom: 2.5rem;
+  max-width: 500px;
+}
+
+.search-bar {
+  display: flex;
+  align-items: center;
+  background: white;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 14px 20px;
+  transition: all 0.3s ease;
+}
+
+.search-bar:focus-within {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+}
+
+.search-icon {
+  margin-right: 12px;
+  color: #94a3b8;
+  font-size: 1.3rem;
+}
+
+.search-bar input {
+  border: none;
+  outline: none;
+  width: 100%;
+  font-size: 1.05rem;
+  background: transparent;
+}
+
+/* Lot Cards */
+.lots-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+  gap: 1.8rem;
+}
+
+.lot-card {
+  background: white;
+  border-radius: 20px;
+  padding: 1.8rem;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.06);
+  transition: all 0.3s ease;
+  border: 1px solid #f1f5f9;
+}
+
+.lot-card:hover {
+  transform: translateY(-8px);
+  box-shadow: 0 20px 35px rgba(0, 0, 0, 0.1);
+  border-color: #e2e8f0;
+}
+
+.lot-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 1.2rem;
+}
+
+.lot-header h3 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  color: #1e2937;
+}
+
+.status-badge {
+  padding: 6px 14px;
+  border-radius: 9999px;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+.active {
+  background: #d1fae5;
+  color: #10b981;
+}
+
+.inactive {
+  background: #fee2e2;
+  color: #ef4444;
+}
+
+/* Lot Body */
+.lot-body {
+  margin-bottom: 1.5rem;
+}
+
+.address {
+  color: #475569;
+  margin-bottom: 0.8rem;
+  line-height: 1.5;
+}
+
+.rate {
+  color: #1e2937;
+  font-size: 1.1rem;
+}
+
+/* Footer Buttons */
+.lot-footer {
+  display: flex;
+  gap: 12px;
+  padding-top: 1rem;
+  border-top: 1px solid #f1f5f9;
+}
+
+.btn-edit, .btn-delete {
+  flex: 1;
+  padding: 12px;
+  border-radius: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.btn-edit {
+  background: #f1f5f9;
+  color: #475569;
+  border: none;
+}
+
+.btn-edit:hover {
+  background: #e2e8f0;
+}
+
+.btn-delete {
+  background: #fee2e2;
+  color: #ef4444;
+  border: none;
+}
+
+.btn-delete:hover {
+  background: #fecaca;
+}
+
+/* Button Primary */
+.btn-primary {
+  padding: 14px 28px;
+  background: #3b82f6;
+  color: white;
+  border: none;
+  border-radius: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  background: #2563eb;
+  transform: translateY(-2px);
+}
+
+/* Loading & Empty State */
+.loading-state, .empty-state {
+  text-align: center;
+  padding: 4rem 2rem;
+}
+
+.empty-icon {
+  font-size: 4rem;
+  margin-bottom: 1rem;
+  opacity: 0.6;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .parking-lots-page {
+    padding: 1.5rem;
+  }
+  
+  .page-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+  
+  .lots-grid {
+    grid-template-columns: 1fr;
+  }
+}

@@ -1,7 +1,8 @@
 <div class="dashboard">
-  <!-- Welcome Header -->
+  
+  <!-- Welcome Header - Now properly placed beside sidebar -->
   <div class="welcome-header">
-    <h1>Welcome back, {{ userName }}</h1>
+    <h1>Welcome back, {{ userName }} 👋</h1>
     <button (click)="loadDashboard()" class="refresh-btn">🔄 Refresh</button>
   </div>
 
@@ -16,7 +17,7 @@
     {{ error }}
   </div>
 
-  <!-- Main Content -->
+  <!-- Main Dashboard Content -->
   <div *ngIf="dashboardData && !loading" class="dashboard-content">
     
     <div class="stats-grid">
