@@ -49,7 +49,7 @@ export class AuthComponent {
 
     this.authService.login(this.loginData).subscribe({
       next: (response: any) => {
-        // ✅ IMPORTANT: Save user data properly
+        // Save User Properly
         if (response.user) {
           localStorage.setItem('userName', response.user.name || response.user.username || 'User');
           localStorage.setItem('userRole', response.user.role || response.user.roles?.[0] || 'Driver');

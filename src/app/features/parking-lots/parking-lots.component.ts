@@ -20,6 +20,7 @@ export class ParkingLotsComponent implements OnInit {
   error = '';
   searchTerm = '';
 
+  // User Info
   userName: string = 'User';
   userRole: string = 'Driver';
 
@@ -32,75 +33,70 @@ export class ParkingLotsComponent implements OnInit {
     this.loadUserInfo();
     this.loadParkingLots();
   }
-  
 
-loadUserInfo(): void {
+  /** Load user info from localStorage */
+  loadUserInfo(): void {
     this.userName = localStorage.getItem('userName') || 'User';
+    this.userRole = localStorage.getItem('userRole') || 
+                    localStorage.getItem('role') || 'Driver';
 
-    let savedRole = localStorage.getItem('userRole') || 
-                    localStorage.getItem('role') ||
-                    localStorage.getItem('currentRole');
-
-    // If role is inside a user object
-    if (!savedRole) {
-      const userStr = localStorage.getItem('currentUser');
-      if (userStr) {
-        const user = JSON.parse(userStr);
-        savedRole = user.role || user.roles || 'Driver';
-      }
-    }
-
-    this.userRole = savedRole || 'Driver';
-
-    console.log('Loaded Role:', this.userRole);
+    console.log('👤 Current User Role:', this.userRole);
   }
 
-  // Improved role checking
+  /** Check if user is Admin */
   isAdmin(): boolean {
-    if (!this.userRole) {
-      console.log('❌ userRole is empty or null');
-      return false;
-    }
-
-    const role = this.userRole.toString().toUpperCase().trim();
-    console.log('🔍 Raw userRole:', this.userRole);
-    console.log('🔍 Processed role:', role);
-
-    const isAdminUser = role === 'ADMIN' || 
-                        role === 'ROLE_ADMIN' || 
-                        role.includes('ADMIN');
-
-    console.log('✅ Final isAdmin result:', isAdminUser);
+    if (!this.userRole) return false;
     
-    return isAdminUser;
+    const role = this.userRole.toString().toUpperCase().trim();
+    return role === 'ADMIN' || 
+           role === 'ROLE_ADMIN' || 
+           role.includes('ADMIN');
   }
+
+  /** Create New Parking Lot - Admin Only */
   createNewLot(): void {
+    if (!this.isAdmin()) {
+      alert('Only Admin can create new parking lots.');
+      return;
+    }
     this.router.navigate(['/parking-lots/new']);
   }
 
+  /** Load all parking lots */
   loadParkingLots(): void {
     this.loading = true;
     this.error = '';
 
     this.parkingLotService.getAll(0, 12).subscribe({
       next: (response) => {
-        console.log('📦 API Response received:', response);
+        console.log('📦 Parking Lots Response:', response);
         this.lots = response?.data?.content || response?.data || [];
         this.loading = false;
       },
       error: (err) => {
-        console.error('❌ Load error:', err);
-        this.error = 'Failed to load parking lots.';
+        console.error('❌ Error loading parking lots:', err);
+        this.error = 'Failed to load parking lots. Please try again.';
         this.loading = false;
       }
     });
   }
 
+    // Only Admin can Edit
   editLot(id: number): void {
+    if (!this.isAdmin()) {
+      alert('Only Admin can edit parking lots.');
+      return;
+    }
     this.router.navigate(['/parking-lots', id, 'edit']);
   }
 
+  // Only Admin can Delete
   deleteLot(id: number): void {
+    if (!this.isAdmin()) {
+      alert('Only Admin can delete parking lots.');
+      return;
+    }
+
     if (confirm('Are you sure you want to delete this parking lot?')) {
       this.parkingLotService.delete(id).subscribe({
         next: () => {
@@ -108,13 +104,15 @@ loadUserInfo(): void {
           this.loadParkingLots();
         },
         error: (err) => {
-          alert('Failed to delete parking lot.');
+          console.error(err);
+          alert('Failed to delete parking lot. It may have active slots or bookings.');
         }
       });
     }
   }
 
   onSearch(): void {
-    console.log('Search:', this.searchTerm);
+    console.log('🔍 Searching for:', this.searchTerm);
+    // You can implement search logic later
   }
 }

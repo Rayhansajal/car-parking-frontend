@@ -8,6 +8,7 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/auth.component')
                          .then(m => m.AuthComponent)
   },
+  
   {
     path: '',
     component: MainLayoutComponent,
@@ -23,23 +24,27 @@ export const routes: Routes = [
         loadComponent: () => import('./features/dashboard/dashboard.component')
                              .then(m => m.DashboardComponent) 
       },
-
-      // ==================== PARKING LOTS ====================
+// ==================== PARKING LOTS ====================
       {
         path: 'parking-lots',
-        loadComponent: () => import('./features/parking-lots/parking-lots.component')
-                             .then(m => m.ParkingLotsComponent)
+        children: [
+          { 
+            path: '', 
+            loadComponent: () => import('./features/parking-lots/parking-lots.component')
+                                 .then(m => m.ParkingLotsComponent) 
+          },
+          { 
+            path: 'new', 
+            loadComponent: () => import('./features/dashboard/parking-lot-form/parking-lot-form')
+                                 .then(m => m.ParkingLotFormComponent) 
+          },
+          { 
+            path: ':id/edit', 
+            loadComponent: () => import('./features/dashboard/parking-lot-form/parking-lot-form')
+                                 .then(m => m.ParkingLotFormComponent) 
+          }
+        ]
       },
-{
-    path: 'parking-lots/create',
-    loadComponent: () => import('./features/dashboard/parking-lot-form/parking-lot-form')
-                        .then(m => m.ParkingLotFormComponent)
-},
-{
-    path: 'parking-lots/:id/edit',
-    loadComponent: () => import('./features/dashboard/parking-lot-form/parking-lot-form')
-                        .then(m => m.ParkingLotFormComponent)
-},
 
       // // ==================== PARKING SLOTS ====================
       // {
