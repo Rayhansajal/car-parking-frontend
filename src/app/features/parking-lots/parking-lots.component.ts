@@ -1,10 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Router } from '@angular/router';
 import { FormsModule } from '@angular/forms';
 
 import { ParkingLotService } from '../../core/services/parking-lot.service';
-import { ParkingLot } from '../../models/parking-lot.model';
+import { AuthService } from '../../core/services/auth.service';
+import { ParkingLot, ParkingLotRequestDTO } from '../../models/parking-lot.model';
 
 @Component({
   selector: 'app-parking-lots',
@@ -16,103 +16,165 @@ import { ParkingLot } from '../../models/parking-lot.model';
 export class ParkingLotsComponent implements OnInit {
 
   lots: ParkingLot[] = [];
-  loading = true;
+  loading = false;
   error = '';
   searchTerm = '';
 
-  // User Info
-  userName: string = 'User';
-  userRole: string = 'Driver';
+  // Modal control
+  showModal = false;
+  isEditing = false;
+  selectedLotId: number | null = null;
+
+ 
+  form: ParkingLotRequestDTO = {
+    name: '',
+    address: '',
+    city: '',
+    hourlyRate: 0,
+    enabled: true,
+    dailyRate: 0,
+    latitude: 0,
+    longitude: 0,
+    totalFloors: 0
+  };
 
   constructor(
     private parkingLotService: ParkingLotService,
-    private router: Router
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
-    this.loadUserInfo();
     this.loadParkingLots();
   }
 
-  /** Load user info from localStorage */
-  loadUserInfo(): void {
-    this.userName = localStorage.getItem('userName') || 'User';
-    this.userRole = localStorage.getItem('userRole') || 
-                    localStorage.getItem('role') || 'Driver';
-
-    console.log('👤 Current User Role:', this.userRole);
-  }
-
-  /** Check if user is Admin */
   isAdmin(): boolean {
-    if (!this.userRole) return false;
-    
-    const role = this.userRole.toString().toUpperCase().trim();
-    return role === 'ADMIN' || 
-           role === 'ROLE_ADMIN' || 
-           role.includes('ADMIN');
+    return this.authService.hasRole('ADMIN');
   }
 
-  /** Create New Parking Lot - Admin Only */
   createNewLot(): void {
-    if (!this.isAdmin()) {
-      alert('Only Admin can create new parking lots.');
-      return;
-    }
-    this.router.navigate(['/parking-lots/new']);
+    if (!this.isAdmin()) return;
+    this.resetForm();
+    this.isEditing = false;
+    this.selectedLotId = null;
+    this.showModal = true;
   }
 
-  /** Load all parking lots */
+  editLot(id: number): void {
+    if (!this.isAdmin()) return;
+
+    const lot = this.lots.find(l => l.id === id);
+    if (!lot) return;
+
+    this.selectedLotId = id;
+    this.isEditing = true;
+
+    this.form = {
+      name: lot.name,
+      address: lot.address,
+      city: lot.city || '',
+      hourlyRate: lot.hourlyRate,
+      enabled: lot.enabled,
+      dailyRate: lot.dailyRate || 0,
+      latitude: lot.latitude || 0,
+      longitude: lot.longitude || 0,
+      totalFloors: lot.totalFloors || 0
+    };
+
+    this.showModal = true;
+  }
+
+  saveParkingLot(): void {
+    if (this.isEditing && this.selectedLotId !== null) {
+      this.updateParkingLot();
+    } else {
+      this.createParkingLot();
+    }
+  }
+
+  private createParkingLot(): void {
+    this.parkingLotService.create(this.form).subscribe({
+      next: () => {
+        alert('✅ Parking lot created successfully!');
+        this.closeModal();
+        this.loadParkingLots();
+      },
+      error: (err) => {
+        console.error(err);
+        alert('❌ Failed to create parking lot.');
+      }
+    });
+  }
+
+  private updateParkingLot(): void {
+    if (this.selectedLotId === null) return;
+
+    this.parkingLotService.update(this.selectedLotId, this.form).subscribe({
+      next: () => {
+        alert('✅ Parking lot updated successfully!');
+        this.closeModal();
+        this.loadParkingLots();
+      },
+      error: (err) => {
+        console.error(err);
+        alert('❌ Failed to update parking lot.');
+      }
+    });
+  }
+
+  closeModal(): void {
+    this.showModal = false;
+    this.resetForm();
+  }
+
+  private resetForm(): void {
+    this.form = {
+      name: '',
+      address: '',
+      city: '',
+      hourlyRate: 0,
+      enabled: true,
+      dailyRate: 0,
+      latitude: 0,
+      longitude: 0,
+      totalFloors: 0
+    };
+  }
+
+  deleteLot(id: number): void {
+    if (!this.isAdmin()) return;
+    if (!confirm('Are you sure you want to delete this parking lot?')) return;
+
+    this.parkingLotService.delete(id).subscribe({
+      next: () => {
+        alert('✅ Parking lot deleted successfully!');
+        this.loadParkingLots();
+      },
+      error: (err) => {
+        console.error(err);
+        alert('❌ Failed to delete. It may have active bookings.');
+      }
+    });
+  }
+
   loadParkingLots(): void {
     this.loading = true;
     this.error = '';
 
     this.parkingLotService.getAll(0, 12).subscribe({
-      next: (response) => {
-        console.log('📦 Parking Lots Response:', response);
+      next: (response: any) => {
         this.lots = response?.data?.content || response?.data || [];
         this.loading = false;
       },
       error: (err) => {
-        console.error('❌ Error loading parking lots:', err);
+        console.error(err);
         this.error = 'Failed to load parking lots. Please try again.';
         this.loading = false;
       }
     });
   }
 
-    // Only Admin can Edit
-  editLot(id: number): void {
-    if (!this.isAdmin()) {
-      alert('Only Admin can edit parking lots.');
-      return;
-    }
-    this.router.navigate(['/parking-lots', id, 'edit']);
-  }
-
-  // Only Admin can Delete
-  deleteLot(id: number): void {
-    if (!this.isAdmin()) {
-      alert('Only Admin can delete parking lots.');
-      return;
-    }
-
-    if (confirm('Are you sure you want to delete this parking lot?')) {
-      this.parkingLotService.delete(id).subscribe({
-        next: () => {
-          alert('Parking lot deleted successfully!');
-          this.loadParkingLots();
-        },
-        error: (err) => {
-          console.error(err);
-          alert('Failed to delete parking lot. It may have active slots or bookings.');
-        }
-      });
-    }
-  }
-
   onSearch(): void {
-    console.log('🔍 Searching for:', this.searchTerm);
-    // You can implement search logic later
+    console.log('Searching for:', this.searchTerm);
+    
   }
 }

@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { ParkingLot, ParkingLotRequest } from '../../models/parking-lot.model';
+import { ParkingLot, ParkingLotRequestDTO } from '../../models/parking-lot.model';
 
 @Injectable({
   providedIn: 'root'
@@ -25,11 +25,11 @@ export class ParkingLotService {
     return this.http.get<ParkingLot>(`${this.apiUrl}/${id}`);
   }
 
-  create(lot: ParkingLotRequest): Observable<ParkingLot> {
+  create(lot: ParkingLotRequestDTO): Observable<ParkingLot> {
     return this.http.post<ParkingLot>(this.apiUrl, lot);
   }
 
-  update(id: number, lot: ParkingLotRequest): Observable<ParkingLot> {
+  update(id: number, lot: ParkingLotRequestDTO): Observable<ParkingLot> {
     return this.http.put<ParkingLot>(`${this.apiUrl}/${id}`, lot);
   }
 
