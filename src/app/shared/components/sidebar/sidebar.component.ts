@@ -8,12 +8,12 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
   styleUrl: './sidebar.component.scss'
 })
 export class SidebarComponent {
-menuItems = [
-    { path: '/dashboard', label: 'Dashboard', icon: '🏠' },
-    { path: '/bookings/my', label: 'My Bookings', icon: '📅' },
-    { path: '/lots', label: 'Parking Lots', icon: '🏢' },
-    { path: '/slots', label: 'Parking Slots', icon: '🅿️' },
-    { path: '/vehicles', label: 'My Vehicles', icon: '🚗' },
-    { path: '/reports', label: 'Reports', icon: '📊' },
+  menuItems = [
+    { path: '/dashboard', label: 'Dashboard', icon: 'D' },
+    { path: '/bookings/my', label: 'My Bookings', icon: 'B' },
+    { path: '/parking-lots', label: 'Parking Lots', icon: 'L' },
+    { path: '/slots', label: 'Parking Slots', icon: 'P' },
+    { path: '/vehicles', label: 'My Vehicles', icon: 'V' },
+    { path: '/reports', label: 'Reports', icon: 'R' }
   ];
 }

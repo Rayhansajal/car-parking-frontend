@@ -1,63 +1,93 @@
 <div class="dashboard">
-  
-  <!-- Welcome Header - Now properly placed beside sidebar -->
   <div class="welcome-header">
-    <h1>Welcome back, {{ userName }} 👋</h1>
-    <button (click)="loadDashboard()" class="refresh-btn">🔄 Refresh</button>
+    <div>
+      <span class="eyebrow">Operations overview</span>
+      <h1>Welcome back, {{ userName }}</h1>
+      <p>Track parking capacity, bookings, and revenue in one place.</p>
+    </div>
+
+    <button type="button" (click)="loadDashboard()" class="refresh-btn">
+      Refresh
+    </button>
   </div>
 
-  <!-- Loading -->
   <div *ngIf="loading" class="loading">
     <div class="spinner"></div>
     <p>Loading dashboard...</p>
   </div>
 
-  <!-- Error -->
   <div *ngIf="error && !loading" class="error-message">
     {{ error }}
   </div>
 
-  <!-- Main Dashboard Content -->
   <div *ngIf="dashboardData && !loading" class="dashboard-content">
-    
     <div class="stats-grid">
-      <div class="stat-card blue">
-        <div class="card-icon">🏢</div>
-        <h3>Total Parking Lots</h3>
-        <p class="big-number">{{ dashboardData.totalParkingLots }}</p>
+      <div class="stat-card lots">
+        <span class="card-icon">L</span>
+        <div>
+          <h3>Total Parking Lots</h3>
+          <p class="big-number">{{ dashboardData.totalParkingLots }}</p>
+        </div>
       </div>
 
-      <div class="stat-card green">
-        <div class="card-icon">🅿️</div>
-        <h3>Available Slots</h3>
-        <p class="big-number">{{ dashboardData.availableSlots }}</p>
-        <small>out of {{ dashboardData.totalSlots }}</small>
+      <div class="stat-card slots">
+        <span class="card-icon">P</span>
+        <div>
+          <h3>Available Slots</h3>
+          <p class="big-number">{{ dashboardData.availableSlots }}</p>
+          <small>out of {{ dashboardData.totalSlots }}</small>
+        </div>
       </div>
 
-      <div class="stat-card purple">
-        <div class="card-icon">📍</div>
-        <h3>Active Bookings</h3>
-        <p class="big-number">{{ dashboardData.activeBookings }}</p>
+      <div class="stat-card bookings">
+        <span class="card-icon">B</span>
+        <div>
+          <h3>Active Bookings</h3>
+          <p class="big-number">{{ dashboardData.activeBookings }}</p>
+          <small>{{ dashboardData.totalBookingsToday }} today</small>
+        </div>
       </div>
 
-      <div class="stat-card emerald">
-        <div class="card-icon">💰</div>
-        <h3>Today's Revenue</h3>
-        <p class="big-number">৳{{ dashboardData.totalRevenueToday }}</p>
+      <div class="stat-card revenue">
+        <span class="card-icon">৳</span>
+        <div>
+          <h3>Today's Revenue</h3>
+          <p class="big-number">৳{{ dashboardData.totalRevenueToday }}</p>
+          <small>৳{{ dashboardData.totalRevenueThisMonth }} this month</small>
+        </div>
       </div>
     </div>
 
-    <!-- Occupancy -->
-    <div class="occupancy-card">
-      <h3>Current Parking Occupancy</h3>
-      <div class="occupancy-main">
-        <span class="rate" [ngClass]="getOccupancyColor(dashboardData.occupancyRate)">
-          {{ dashboardData.occupancyRate }}%
-        </span>
-        <div class="progress-container">
-          <div class="progress-bar">
-            <div class="progress" [style.width.%]="dashboardData.occupancyRate"></div>
+    <div class="dashboard-panels">
+      <div class="occupancy-card">
+        <div class="section-heading">
+          <div>
+            <h3>Current Parking Occupancy</h3>
+            <p>{{ dashboardData.occupiedSlots }} occupied of {{ dashboardData.totalSlots }} total slots</p>
           </div>
+          <span class="rate" [ngClass]="getOccupancyColor(dashboardData.occupancyRate)">
+            {{ dashboardData.occupancyRate }}%
+          </span>
+        </div>
+
+        <div class="progress-bar">
+          <div class="progress" [style.width.%]="getProgressWidth(dashboardData.occupancyRate)"></div>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <h3>Slot Summary</h3>
+        <div class="summary-row">
+          <span>Available</span>
+          <strong>{{ dashboardData.availableSlots }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Occupied</span>
+          <strong>{{ dashboardData.occupiedSlots }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Total</span>
+          <strong>{{ dashboardData.totalSlots }}</strong>
         </div>
       </div>
     </div>

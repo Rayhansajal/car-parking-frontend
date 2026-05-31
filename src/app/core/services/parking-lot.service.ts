@@ -13,12 +13,12 @@ export class ParkingLotService {
 
   getAll(page = 0, size = 10, search?: string): Observable<any> {
     let url = `${this.apiUrl}?page=${page}&size=${size}`;
-    if (search) url += `&search=${search}`;
+    if (search) url += `&search=${encodeURIComponent(search)}`;
     return this.http.get(url);
   }
 
-  getActiveLots(): Observable<ParkingLot[]> {
-    return this.http.get<ParkingLot[]>(`${this.apiUrl}/active`);
+  getActiveLots(): Observable<unknown> {
+    return this.http.get(`${this.apiUrl}/active`);
   }
 
   getById(id: number): Observable<ParkingLot> {

@@ -1,80 +1,91 @@
 <div class="parking-lots-page">
-  
-  <!-- Page Header -->
   <div class="page-header">
     <div class="header-content">
+      <span class="eyebrow">Location inventory</span>
       <h1>Parking Lots</h1>
-      <p class="subtitle">Manage all your parking locations</p>
+      <p class="subtitle">Manage parking locations, capacity, pricing, and availability.</p>
     </div>
-    
-    <button 
-      *ngIf="isAdmin()" 
-      class="btn-primary" 
-      (click)="createNewLot()">
+
+    <button *ngIf="isAdmin()" class="btn-primary" type="button" (click)="createNewLot()">
       <span>+</span> New Parking Lot
     </button>
   </div>
 
-  <!-- Search Bar -->
   <div class="search-container">
     <div class="search-bar">
-      <span class="search-icon">🔍</span>
-      <input 
-        type="text" 
-        [(ngModel)]="searchTerm" 
+      <span class="search-icon">S</span>
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
         (keyup.enter)="onSearch()"
-        placeholder="Search by name, city or address...">
+        placeholder="Search by name, city or address..."
+      >
     </div>
+    <button class="btn-secondary" type="button" (click)="onSearch()">Search</button>
   </div>
 
-  <!-- Loading -->
   <div *ngIf="loading" class="loading-state">
     <div class="spinner"></div>
     <p>Loading parking lots...</p>
   </div>
 
-  <!-- Error -->
   <div *ngIf="error && !loading" class="error-message">
     {{ error }}
   </div>
 
-  <!-- Parking Lots Grid -->
   <div class="lots-grid" *ngIf="!loading && lots.length > 0">
     <div class="lot-card" *ngFor="let lot of lots">
       <div class="lot-header">
-        <h3>{{ lot.name }}</h3>
-        <span class="status-badge" 
-              [class.active]="lot.enabled" 
-              [class.inactive]="!lot.enabled">
+        <div>
+          <h3>{{ lot.name }}</h3>
+          <p>{{ lot.city || 'City not set' }}</p>
+        </div>
+
+        <span
+          class="status-badge"
+          [class.active]="lot.enabled"
+          [class.inactive]="!lot.enabled"
+        >
           {{ lot.enabled ? 'Active' : 'Inactive' }}
         </span>
       </div>
-      
+
       <div class="lot-body">
-        <p class="address">📍 {{ lot.address }}, {{ lot.city }}</p>
-        <p class="rate"><strong>Hourly Rate:</strong> ৳{{ lot.hourlyRate }}</p>
-        <p class="slots"><strong>Slots:</strong> {{ lot.availableSlots }} / {{ lot.totalSlots }}</p>
+        <p class="address">{{ lot.address }}, {{ lot.city }}</p>
+
+        <div class="lot-stats">
+          <div>
+            <span>Hourly Rate</span>
+            <strong>৳{{ lot.hourlyRate }}</strong>
+          </div>
+          <div>
+            <span>Slots</span>
+            <strong>{{ lot.availableSlots }} / {{ lot.totalSlots }}</strong>
+          </div>
+          <div>
+            <span>Floors</span>
+            <strong>{{ lot.totalFloors || 1 }}</strong>
+          </div>
+        </div>
       </div>
 
-      <div class="lot-footer">
-        <button class="btn-edit" (click)="editLot(lot.id)" *ngIf="isAdmin()">Edit</button>
-        <button class="btn-delete" (click)="deleteLot(lot.id)" *ngIf="isAdmin()">Delete</button>
+      <div class="lot-footer" *ngIf="isAdmin()">
+        <button class="btn-edit" type="button" (click)="editLot(lot.id)">Edit</button>
+        <button class="btn-delete" type="button" (click)="deleteLot(lot.id)">Delete</button>
       </div>
     </div>
   </div>
 
-  <!-- Empty State -->
   <div *ngIf="!loading && lots.length === 0 && !error" class="empty-state">
-    <div class="empty-icon">🅿️</div>
+    <div class="empty-icon">P</div>
     <h3>No parking lots found</h3>
     <p>Try adjusting your search or add a new parking lot.</p>
   </div>
 
-  <!-- === MODAL === -->
   <div class="modal" *ngIf="showModal">
     <div class="modal-content">
       <h2>{{ isEditing ? 'Update Parking Lot' : 'Create New Parking Lot' }}</h2>
-      
+
       <form (ngSubmit)="saveParkingLot()">
         <div class="form-grid">
           <div class="form-group">
@@ -105,8 +116,8 @@
           <div class="form-group">
             <label>Status</label>
             <select [(ngModel)]="form.enabled" name="enabled">
-              <option [value]="true">Active</option>
-              <option [value]="false">Inactive</option>
+              <option [ngValue]="true">Active</option>
+              <option [ngValue]="false">Inactive</option>
             </select>
           </div>
         </div>

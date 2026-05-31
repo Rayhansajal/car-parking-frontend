@@ -1,0 +1,138 @@
+<div class="parking-slots-page">
+  <div class="page-header">
+    <div>
+      <h1>Parking Slots</h1>
+      <p class="subtitle">Create and manage individual spaces for each parking lot</p>
+    </div>
+
+    <button *ngIf="isAdmin()" class="btn-primary" type="button" (click)="createNewSlot()">
+      <span>+</span> New Slot
+    </button>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-bar">
+      <span class="search-icon">S</span>
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        (keyup.enter)="onSearch()"
+        placeholder="Search slot number, type or status..."
+      >
+    </div>
+
+    <select class="lot-filter" [(ngModel)]="selectedLotFilter">
+      <option value="">All parking lots</option>
+      <option *ngFor="let lot of lots" [value]="lot.id">{{ lot.name }}</option>
+    </select>
+
+    <button class="btn-secondary" type="button" (click)="onSearch()">Search</button>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading parking slots...</p>
+  </div>
+
+  <div *ngIf="error && !loading" class="error-message">
+    {{ error }}
+  </div>
+
+  <div class="slots-grid" *ngIf="!loading && filteredSlots.length > 0">
+    <div class="slot-card" *ngFor="let slot of filteredSlots">
+      <div class="slot-topline">
+        <div class="slot-number">{{ getSlotNumber(slot) }}</div>
+        <span class="status-badge" [ngClass]="getSlotStatusClass(slot)">
+          {{ getSlotStatus(slot) }}
+        </span>
+      </div>
+
+      <div class="slot-meta">
+        <span>Lot</span>
+        <strong>{{ getLotName(slot) }}</strong>
+      </div>
+
+      <div class="slot-details">
+        <div>
+          <span>Floor</span>
+          <strong>{{ getSlotFloor(slot) }}</strong>
+        </div>
+        <div>
+          <span>Zone</span>
+          <strong>{{ slot.zone || '-' }}</strong>
+        </div>
+        <div>
+          <span>Type</span>
+          <strong>{{ slot.slotType }}</strong>
+        </div>
+      </div>
+
+      <div class="slot-actions">
+        <button *ngIf="canBookSlot(slot)" class="btn-book" type="button" (click)="bookSlot(slot)">Book</button>
+        <button *ngIf="isAdmin()" class="btn-edit" type="button" (click)="editSlot(slot)">Edit</button>
+        <button *ngIf="isAdmin()" class="btn-delete" type="button" (click)="deleteSlot(slot.id)">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && filteredSlots.length === 0 && !error" class="empty-state">
+    <div class="empty-icon">P</div>
+    <h3>No parking slots found</h3>
+    <p>Add a slot or adjust the current filters.</p>
+  </div>
+
+  <div class="modal" *ngIf="showModal">
+    <div class="modal-content">
+      <h2>{{ isEditing ? 'Update Parking Slot' : 'Create Parking Slot' }}</h2>
+
+      <form (ngSubmit)="saveParkingSlot()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Parking Lot <span class="required">*</span></label>
+            <select [(ngModel)]="form.lotId" name="lotId" required>
+              <option [ngValue]="null">Select parking lot</option>
+              <option *ngFor="let lot of lots" [ngValue]="lot.id">{{ lot.name }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Slot Number <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="form.slotNo" name="slotNo" required placeholder="A-101">
+          </div>
+
+          <div class="form-group">
+            <label>Floor <span class="required">*</span></label>
+            <input type="number" [(ngModel)]="form.floor" name="floor" min="1" required>
+          </div>
+
+          <div class="form-group">
+            <label>Zone</label>
+            <input type="text" [(ngModel)]="form.zone" name="zone" placeholder="North">
+          </div>
+
+          <div class="form-group">
+            <label>Slot Type</label>
+            <select [(ngModel)]="form.slotType" name="slotType">
+              <option *ngFor="let type of slotTypes" [value]="type">{{ type }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Availability</label>
+            <select [(ngModel)]="form.status" name="status">
+              <option *ngFor="let status of statuses" [value]="status">{{ status }}</option>
+            </select>
+          </div>
+
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="closeModal()">Cancel</button>
+          <button type="submit" class="btn-primary">
+            {{ isEditing ? 'Update Slot' : 'Create Slot' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

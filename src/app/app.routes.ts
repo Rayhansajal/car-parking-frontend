@@ -46,29 +46,23 @@ export const routes: Routes = [
         ]
       },
 
-      // // ==================== PARKING SLOTS ====================
-      // {
-      //   path: 'parking-slots',
-      //   loadComponent: () => import('./features/parking-slots/parking-slot-list/parking-slot-list.component')
-      //                        .then(m => m.ParkingSlotListComponent)
-      // },
-      // {
-      //   path: 'parking-slots/create',
-      //   loadComponent: () => import('./features/parking-slots/parking-slot-form/parking-slot-form.component')
-      //                        .then(m => m.ParkingSlotFormComponent)
-      // },
+      // ==================== PARKING SLOTS ====================
+      {
+        path: 'slots',
+        loadComponent: () => import('./features/parking-slots/parking-slots.component')
+                             .then(m => m.ParkingSlotsComponent)
+      },
 
-      // // ==================== BOOKINGS ====================
-      // {
-      //   path: 'bookings',
-      //   loadComponent: () => import('./features/bookings/booking-list/booking-list.component')
-      //                        .then(m => m.BookingListComponent)
-      // },
-      // {
-      //   path: 'my-bookings',
-      //   loadComponent: () => import('./features/bookings/my-bookings/my-bookings.component')
-      //                        .then(m => m.MyBookingsComponent)
-      // },
+      {
+        path: 'bookings',
+        loadComponent: () => import('./features/bookings/bookings.component')
+                             .then(m => m.BookingsComponent)
+      },
+      {
+        path: 'bookings/my',
+        loadComponent: () => import('./features/bookings/bookings.component')
+                             .then(m => m.BookingsComponent)
+      },
 
       // Future routes can be added here
     ]
