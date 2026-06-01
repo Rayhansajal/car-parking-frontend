@@ -39,7 +39,7 @@
   </div>
 
   <div class="slots-grid" *ngIf="!loading && filteredSlots.length > 0">
-    <div class="slot-card" *ngFor="let slot of filteredSlots">
+    <div class="slot-card" [ngClass]="getSlotStatusClass(slot)" *ngFor="let slot of filteredSlots">
       <div class="slot-topline">
         <div class="slot-number">{{ getSlotNumber(slot) }}</div>
         <span class="status-badge" [ngClass]="getSlotStatusClass(slot)">

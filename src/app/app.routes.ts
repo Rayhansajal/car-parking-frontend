@@ -63,6 +63,11 @@ export const routes: Routes = [
         loadComponent: () => import('./features/bookings/bookings.component')
                              .then(m => m.BookingsComponent)
       },
+      {
+        path: 'vehicles',
+        loadComponent: () => import('./features/vehicles/vehicles.component')
+                             .then(m => m.VehiclesComponent)
+      },
 
       // Future routes can be added here
     ]

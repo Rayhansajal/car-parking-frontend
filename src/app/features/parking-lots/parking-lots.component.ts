@@ -1,6 +1,7 @@
 import { CommonModule } from '@angular/common';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 
 import { AuthService } from '../../core/services/auth.service';
 import { ParkingLotService } from '../../core/services/parking-lot.service';
@@ -27,7 +28,8 @@ export class ParkingLotsComponent implements OnInit {
 
   constructor(
     private parkingLotService: ParkingLotService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {}
 
   ngOnInit(): void {
@@ -102,9 +104,15 @@ export class ParkingLotsComponent implements OnInit {
     this.loading = true;
     this.error = '';
 
-    this.parkingLotService.getAll(0, 12, this.searchTerm.trim()).subscribe({
+    const search = this.searchTerm.trim();
+    const request = this.isAdmin()
+      ? this.parkingLotService.getAll(0, 12, search)
+      : this.parkingLotService.getActiveLots();
+
+    request.subscribe({
       next: (response: unknown) => {
-        this.lots = this.extractList<ParkingLot>(response);
+        const lots = this.extractList<ParkingLot>(response);
+        this.lots = this.isAdmin() ? lots : this.filterActiveLots(lots, search);
         this.loading = false;
       },
       error: (err: unknown) => {
@@ -117,6 +125,14 @@ export class ParkingLotsComponent implements OnInit {
 
   onSearch(): void {
     this.loadParkingLots();
+  }
+
+  viewSlots(lot: ParkingLot): void {
+    this.router.navigate(['/slots'], {
+      queryParams: {
+        lotId: lot.id
+      }
+    });
   }
 
   private createParkingLot(): void {
@@ -171,6 +187,9 @@ export class ParkingLotsComponent implements OnInit {
     if (Array.isArray(response)) return response as T[];
 
     if (this.isRecord(response)) {
+      const content = response['content'];
+      if (Array.isArray(content)) return content as T[];
+
       const data = response['data'];
       if (Array.isArray(data)) return data as T[];
 
@@ -178,9 +197,27 @@ export class ParkingLotsComponent implements OnInit {
         const content = data['content'];
         if (Array.isArray(content)) return content as T[];
       }
+
+      const embedded = response['_embedded'];
+      if (this.isRecord(embedded)) {
+        const firstEmbeddedList = Object.values(embedded).find(Array.isArray);
+        if (Array.isArray(firstEmbeddedList)) return firstEmbeddedList as T[];
+      }
     }
 
     return [];
+  }
+
+  private filterActiveLots(lots: ParkingLot[], search: string): ParkingLot[] {
+    const activeLots = lots.filter(lot => lot.enabled);
+    if (!search) return activeLots;
+
+    const normalizedSearch = search.toLowerCase();
+    return activeLots.filter(lot =>
+      lot.name.toLowerCase().includes(normalizedSearch) ||
+      (lot.city || '').toLowerCase().includes(normalizedSearch) ||
+      lot.address.toLowerCase().includes(normalizedSearch)
+    );
   }
 
   private isRecord(value: unknown): value is Record<string, unknown> {

@@ -1,1 +1,116 @@
-<p>vehicles works!</p>
+<div class="vehicles-page">
+  <div class="page-header">
+    <div>
+      <span class="eyebrow">Garage</span>
+      <h1>My Vehicles</h1>
+      <p class="subtitle">Register and manage the vehicles you use for parking reservations.</p>
+    </div>
+
+    <button class="btn-primary" type="button" (click)="openCreateModal()">
+      <span>+</span> Add Vehicle
+    </button>
+  </div>
+
+  <div class="toolbar">
+    <div class="search-bar">
+      <span class="search-icon">S</span>
+      <input
+        type="text"
+        [(ngModel)]="searchTerm"
+        placeholder="Search plate, type, brand, model or color..."
+      >
+    </div>
+
+    <button class="btn-secondary" type="button" (click)="loadVehicles()">Refresh</button>
+  </div>
+
+  <div *ngIf="loading" class="loading-state">
+    <div class="spinner"></div>
+    <p>Loading vehicles...</p>
+  </div>
+
+  <div *ngIf="error && !loading" class="error-message">
+    {{ error }}
+  </div>
+
+  <div class="vehicles-table" *ngIf="!loading && filteredVehicles.length > 0">
+    <div class="table-head">
+      <span>Plate</span>
+      <span>Type</span>
+      <span>Details</span>
+      <span>Registered</span>
+      <span></span>
+    </div>
+
+    <div class="table-row" *ngFor="let vehicle of filteredVehicles">
+      <div>
+        <strong>{{ vehicle.plateNo }}</strong>
+        <small>{{ vehicle.ownerName || 'Current user' }}</small>
+      </div>
+      <div>
+        <span class="type-badge">{{ formatVehicleType(vehicle.type) }}</span>
+      </div>
+      <div>
+        <strong>{{ getVehicleDetails(vehicle) }}</strong>
+        <small *ngIf="vehicle.brand || vehicle.model || vehicle.color">
+          {{ vehicle.brand || '-' }} / {{ vehicle.model || '-' }} / {{ vehicle.color || '-' }}
+        </small>
+      </div>
+      <div>{{ vehicle.createdAt ? (vehicle.createdAt | date:'mediumDate') : '-' }}</div>
+      <div class="row-actions">
+        <button class="btn-edit" type="button" (click)="editVehicle(vehicle)">Edit</button>
+        <button class="btn-delete" type="button" (click)="deleteVehicle(vehicle.id)">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && filteredVehicles.length === 0 && !error" class="empty-state">
+    <div class="empty-icon">V</div>
+    <h3>No vehicles found</h3>
+    <p>Add your first vehicle to make future bookings faster.</p>
+  </div>
+
+  <div class="modal" *ngIf="showModal">
+    <div class="modal-content">
+      <h2>{{ isEditing ? 'Update Vehicle' : 'Add Vehicle' }}</h2>
+
+      <form (ngSubmit)="saveVehicle()">
+        <div class="form-grid">
+          <div class="form-group">
+            <label>Plate Number <span class="required">*</span></label>
+            <input type="text" [(ngModel)]="form.plateNo" name="plateNo" required placeholder="DHA-1234">
+          </div>
+
+          <div class="form-group">
+            <label>Vehicle Type <span class="required">*</span></label>
+            <select [(ngModel)]="form.type" name="type" required>
+              <option *ngFor="let type of vehicleTypes" [ngValue]="type">{{ formatVehicleType(type) }}</option>
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Brand</label>
+            <input type="text" [(ngModel)]="form.brand" name="brand" placeholder="Toyota">
+          </div>
+
+          <div class="form-group">
+            <label>Model</label>
+            <input type="text" [(ngModel)]="form.model" name="model" placeholder="Corolla">
+          </div>
+
+          <div class="form-group">
+            <label>Color</label>
+            <input type="text" [(ngModel)]="form.color" name="color" placeholder="White">
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" (click)="closeModal()">Cancel</button>
+          <button type="submit" class="btn-primary">
+            {{ isEditing ? 'Update Vehicle' : 'Add Vehicle' }}
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

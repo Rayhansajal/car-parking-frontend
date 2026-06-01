@@ -143,17 +143,19 @@ h1 {
 }
 
 .confirmed,
-.active {
+.checked_in {
   background: #dbeafe;
   color: #1d4ed8;
 }
 
-.completed {
+.checked_out {
   background: #dcfce7;
   color: #166534;
 }
 
-.cancelled {
+.cancelled,
+.expired,
+.no_show {
   background: #fee2e2;
   color: #991b1b;
 }

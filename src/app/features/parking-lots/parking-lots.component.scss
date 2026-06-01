@@ -295,6 +295,7 @@ select:focus {
 
 .btn-primary,
 .btn-secondary,
+.btn-view,
 .btn-edit,
 .btn-delete {
   border: 0;
@@ -322,8 +323,14 @@ select:focus {
 }
 
 .btn-edit,
+.btn-view,
 .btn-delete {
   padding: 0.55rem 0.85rem;
+}
+
+.btn-view {
+  background: #2563eb;
+  color: #fff;
 }
 
 .btn-edit {
@@ -338,6 +345,7 @@ select:focus {
 
 .btn-primary:hover,
 .btn-secondary:hover,
+.btn-view:hover,
 .btn-edit:hover,
 .btn-delete:hover {
   transform: translateY(-1px);

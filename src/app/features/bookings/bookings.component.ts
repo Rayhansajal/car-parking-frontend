@@ -7,9 +7,11 @@ import { BookingService } from '../../core/services/booking.service';
 import { AuthService } from '../../core/services/auth.service';
 import { ParkingLotService } from '../../core/services/parking-lot.service';
 import { ParkingSlotService } from '../../core/services/parking-slot.service';
-import { Booking, BookingRequestDTO } from '../../models/booking.model';
+import { VehicleService } from '../../core/services/vehicle.service';
+import { Booking, BookingRequestDTO, BookingStatus } from '../../models/booking.model';
 import { ParkingLot } from '../../models/parking-lot.model';
 import { ParkingSlot } from '../../models/parking-slot.model';
+import { VehicleResponseDTO } from '../../models/vehicle.model';
 
 @Component({
   selector: 'app-bookings',
@@ -21,9 +23,11 @@ export class BookingsComponent implements OnInit {
   bookings: Booking[] = [];
   lots: ParkingLot[] = [];
   slots: ParkingSlot[] = [];
+  vehicles: VehicleResponseDTO[] = [];
 
   loading = false;
   slotsLoading = false;
+  vehiclesLoading = false;
   error = '';
   searchTerm = '';
   selectedLotId: number | null = null;
@@ -37,6 +41,7 @@ export class BookingsComponent implements OnInit {
     private bookingService: BookingService,
     private parkingLotService: ParkingLotService,
     private parkingSlotService: ParkingSlotService,
+    private vehicleService: VehicleService,
     private authService: AuthService,
     private route: ActivatedRoute
   ) {}
@@ -45,6 +50,7 @@ export class BookingsComponent implements OnInit {
     this.readRequestedSlot();
     this.loadBookings();
     this.loadParkingLots();
+    this.loadVehicles();
   }
 
   isAdmin(): boolean {
@@ -121,8 +127,8 @@ export class BookingsComponent implements OnInit {
       return;
     }
 
-    if (!this.form.vehicleNumber.trim()) {
-      alert('Please enter a vehicle number.');
+    if (!this.form.vehicleId) {
+      alert('Please select a vehicle.');
       return;
     }
 
@@ -192,7 +198,7 @@ export class BookingsComponent implements OnInit {
 
   canCancel(booking: Booking): boolean {
     const status = this.getBookingStatus(booking);
-    return status === 'PENDING' || status === 'CONFIRMED' || status === 'ACTIVE';
+    return status === 'PENDING' || status === 'CONFIRMED';
   }
 
   canCheckIn(booking: Booking): boolean {
@@ -200,7 +206,7 @@ export class BookingsComponent implements OnInit {
   }
 
   canCheckOut(booking: Booking): boolean {
-    return this.isStaff() && this.getBookingStatus(booking) === 'ACTIVE';
+    return this.isStaff() && this.getBookingStatus(booking) === 'CHECKED_IN';
   }
 
   get filteredBookings(): Booking[] {
@@ -232,8 +238,8 @@ export class BookingsComponent implements OnInit {
     return booking.slotNo || (booking.slotId ? `Slot ${booking.slotId}` : '-');
   }
 
-  getBookingStatus(booking: Booking): string {
-    return (booking.status || 'UNKNOWN').toString().toUpperCase();
+  getBookingStatus(booking: Booking): BookingStatus | 'UNKNOWN' {
+    return (booking.status || 'UNKNOWN').toString().toUpperCase() as BookingStatus | 'UNKNOWN';
   }
 
   getStatusClass(booking: Booking): string {
@@ -242,6 +248,14 @@ export class BookingsComponent implements OnInit {
 
   getSlotLabel(slot: ParkingSlot): string {
     return `${slot.slotNo || slot.slotNumber || slot.id} - ${slot.slotType}`;
+  }
+
+  getVehicleLabel(vehicle: VehicleResponseDTO): string {
+    const details = [vehicle.brand, vehicle.model]
+      .filter(value => value && value.trim())
+      .join(' ');
+
+    return details ? `${vehicle.plateNo} - ${details}` : vehicle.plateNo;
   }
 
   private loadParkingLots(): void {
@@ -256,10 +270,25 @@ export class BookingsComponent implements OnInit {
     });
   }
 
+  private loadVehicles(): void {
+    this.vehiclesLoading = true;
+
+    this.vehicleService.getMyVehicles().subscribe({
+      next: (response: unknown) => {
+        this.vehicles = this.extractList<VehicleResponseDTO>(response);
+        this.vehiclesLoading = false;
+      },
+      error: (err: unknown) => {
+        console.error(err);
+        this.vehiclesLoading = false;
+      }
+    });
+  }
+
   private buildRequestPayload(): BookingRequestDTO {
     return {
       slotId: this.form.slotId,
-      vehicleNumber: this.form.vehicleNumber.trim(),
+      vehicleId: this.form.vehicleId,
       startTime: this.form.startTime,
       endTime: this.form.endTime
     };
@@ -294,7 +323,7 @@ export class BookingsComponent implements OnInit {
 
     return {
       slotId: null,
-      vehicleNumber: '',
+      vehicleId: null,
       startTime: this.toDateTimeInputValue(start),
       endTime: this.toDateTimeInputValue(end)
     };
@@ -322,6 +351,12 @@ export class BookingsComponent implements OnInit {
       if (this.isRecord(data)) {
         const dataContent = data['content'];
         if (Array.isArray(dataContent)) return dataContent as T[];
+      }
+
+      const embedded = response['_embedded'];
+      if (this.isRecord(embedded)) {
+        const firstEmbeddedList = Object.values(embedded).find(Array.isArray);
+        if (Array.isArray(firstEmbeddedList)) return firstEmbeddedList as T[];
       }
     }
 

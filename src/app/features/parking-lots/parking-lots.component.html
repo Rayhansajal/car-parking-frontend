@@ -69,9 +69,10 @@
         </div>
       </div>
 
-      <div class="lot-footer" *ngIf="isAdmin()">
-        <button class="btn-edit" type="button" (click)="editLot(lot.id)">Edit</button>
-        <button class="btn-delete" type="button" (click)="deleteLot(lot.id)">Delete</button>
+      <div class="lot-footer">
+        <button class="btn-view" type="button" (click)="viewSlots(lot)">View</button>
+        <button *ngIf="isAdmin()" class="btn-edit" type="button" (click)="editLot(lot.id)">Edit</button>
+        <button *ngIf="isAdmin()" class="btn-delete" type="button" (click)="deleteLot(lot.id)">Delete</button>
       </div>
     </div>
   </div>

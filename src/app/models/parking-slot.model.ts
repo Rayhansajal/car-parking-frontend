@@ -1,5 +1,10 @@
 export type ParkingSlotStatus = 'AVAILABLE' | 'OCCUPIED' | 'RESERVED' | 'MAINTENANCE';
-export type VehicleType = string;
+export type VehicleType =
+  | 'TWO_WHEELER'
+  | 'FOUR_WHEELER'
+  | 'EV'
+  | 'HANDICAPPED'
+  | 'HEAVY';
 
 export interface ParkingSlot {
   id: number;

@@ -2,7 +2,7 @@ import { CommonModule } from '@angular/common';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { catchError, forkJoin, map, of } from 'rxjs';
 
 import { AuthService } from '../../core/services/auth.service';
@@ -31,7 +31,7 @@ export class ParkingSlotsComponent implements OnInit {
   selectedSlotId: number | null = null;
 
   statuses: ParkingSlotStatus[] = ['AVAILABLE', 'OCCUPIED', 'RESERVED', 'MAINTENANCE'];
-  slotTypes: VehicleType[] = ['FOUR_WHEELER', 'TWO_WHEELER', 'EV', 'HEAVY', 'HANDICAPPED'];
+  slotTypes: VehicleType[] = ['TWO_WHEELER', 'FOUR_WHEELER', 'EV', 'HANDICAPPED', 'HEAVY'];
 
   form: ParkingSlotRequestDTO = this.createEmptyForm();
 
@@ -39,10 +39,12 @@ export class ParkingSlotsComponent implements OnInit {
     private parkingSlotService: ParkingSlotService,
     private parkingLotService: ParkingLotService,
     private authService: AuthService,
+    private route: ActivatedRoute,
     private router: Router
   ) {}
 
   ngOnInit(): void {
+    this.readLotFilter();
     this.loadParkingLots();
   }
 
@@ -168,6 +170,12 @@ export class ParkingSlotsComponent implements OnInit {
     this.loadParkingSlots();
   }
 
+  clearLotFilter(): void {
+    this.selectedLotFilter = '';
+    this.router.navigate(['/slots']);
+    this.loadParkingSlots();
+  }
+
   get filteredSlots(): ParkingSlot[] {
     const search = this.searchTerm.trim().toLowerCase();
     const searchedSlots = search
@@ -228,6 +236,11 @@ export class ParkingSlotsComponent implements OnInit {
         this.error = this.getErrorMessage(err, 'Failed to load parking lots.');
       }
     });
+  }
+
+  private readLotFilter(): void {
+    const lotId = Number(this.route.snapshot.queryParamMap.get('lotId'));
+    this.selectedLotFilter = Number.isFinite(lotId) && lotId > 0 ? lotId.toString() : '';
   }
 
   private createParkingSlot(): void {
@@ -297,6 +310,12 @@ export class ParkingSlotsComponent implements OnInit {
       if (this.isRecord(data)) {
         const dataContent = data['content'];
         if (Array.isArray(dataContent)) return dataContent as T[];
+      }
+
+      const embedded = response['_embedded'];
+      if (this.isRecord(embedded)) {
+        const firstEmbeddedList = Object.values(embedded).find(Array.isArray);
+        if (Array.isArray(firstEmbeddedList)) return firstEmbeddedList as T[];
       }
     }
 

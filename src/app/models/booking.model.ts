@@ -1,4 +1,11 @@
-export type BookingStatus = 'PENDING' | 'CONFIRMED' | 'ACTIVE' | 'COMPLETED' | 'CANCELLED';
+export type BookingStatus =
+  | 'PENDING'
+  | 'CONFIRMED'
+  | 'CHECKED_IN'
+  | 'CHECKED_OUT'
+  | 'CANCELLED'
+  | 'EXPIRED'
+  | 'NO_SHOW';
 
 export interface Booking {
   id: number;
@@ -11,7 +18,7 @@ export interface Booking {
   slotNo?: string;
   vehicleNumber?: string;
   licensePlate?: string;
-  status: BookingStatus | string;
+  status: BookingStatus;
   startTime: string;
   endTime: string;
   checkInTime?: string;
@@ -23,7 +30,7 @@ export interface Booking {
 
 export interface BookingRequestDTO {
   slotId: number | null;
-  vehicleNumber: string;
+  vehicleId: number | null;
   startTime: string;
   endTime: string;
 }
