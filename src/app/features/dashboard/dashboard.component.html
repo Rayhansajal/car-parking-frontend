@@ -1,9 +1,9 @@
 <div class="dashboard">
   <div class="welcome-header">
     <div>
-      <span class="eyebrow">Operations overview</span>
+      <span class="eyebrow">{{ isStaff() ? 'Operations overview' : 'My parking overview' }}</span>
       <h1>Welcome back, {{ userName }}</h1>
-      <p>Track parking capacity, bookings, and revenue in one place.</p>
+      <p>{{ isStaff() ? 'Track parking capacity, bookings, and revenue in one place.' : 'See your bookings, vehicles, and available parking at a glance.' }}</p>
     </div>
 
     <button type="button" (click)="loadDashboard()" class="refresh-btn">
@@ -49,11 +49,11 @@
       </div>
 
       <div class="stat-card revenue">
-        <span class="card-icon">৳</span>
+        <span class="card-icon">Tk</span>
         <div>
           <h3>Today's Revenue</h3>
-          <p class="big-number">৳{{ dashboardData.totalRevenueToday }}</p>
-          <small>৳{{ dashboardData.totalRevenueThisMonth }} this month</small>
+          <p class="big-number">Tk {{ dashboardData.totalRevenueToday }}</p>
+          <small>Tk {{ dashboardData.totalRevenueThisMonth }} this month</small>
         </div>
       </div>
     </div>
@@ -88,6 +88,87 @@
         <div class="summary-row">
           <span>Total</span>
           <strong>{{ dashboardData.totalSlots }}</strong>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div *ngIf="userDashboardData && !loading" class="dashboard-content">
+    <div class="stats-grid">
+      <div class="stat-card bookings">
+        <span class="card-icon">B</span>
+        <div>
+          <h3>My Bookings</h3>
+          <p class="big-number">{{ userDashboardData.totalBookings }}</p>
+          <small>{{ userDashboardData.activeBookings }} active</small>
+        </div>
+      </div>
+
+      <div class="stat-card slots">
+        <span class="card-icon">P</span>
+        <div>
+          <h3>Available Slots</h3>
+          <p class="big-number">{{ userDashboardData.availableSlots }}</p>
+          <small>{{ userDashboardData.availableLots }} active lots</small>
+        </div>
+      </div>
+
+      <div class="stat-card lots">
+        <span class="card-icon">V</span>
+        <div>
+          <h3>My Vehicles</h3>
+          <p class="big-number">{{ userDashboardData.registeredVehicles }}</p>
+          <small>ready for booking</small>
+        </div>
+      </div>
+
+      <div class="stat-card revenue">
+        <span class="card-icon">C</span>
+        <div>
+          <h3>Completed Trips</h3>
+          <p class="big-number">{{ userDashboardData.completedBookings }}</p>
+          <small>checked out bookings</small>
+        </div>
+      </div>
+    </div>
+
+    <div class="dashboard-panels">
+      <div class="recent-card">
+        <div class="section-heading">
+          <div>
+            <h3>Recent Bookings</h3>
+            <p>Your latest parking activity</p>
+          </div>
+        </div>
+
+        <div *ngIf="userDashboardData.recentBookings.length > 0; else noRecentBookings" class="booking-list">
+          <div class="booking-row" *ngFor="let booking of userDashboardData.recentBookings">
+            <div>
+              <strong>{{ booking.code }}</strong>
+              <small>{{ booking.lot }} - {{ booking.slot }} - {{ booking.vehicle }}</small>
+            </div>
+            <span class="status-pill">{{ booking.status }}</span>
+          </div>
+        </div>
+
+        <ng-template #noRecentBookings>
+          <div class="empty-inline">No bookings yet.</div>
+        </ng-template>
+      </div>
+
+      <div class="summary-card">
+        <h3>Quick Summary</h3>
+        <div class="summary-row">
+          <span>Active bookings</span>
+          <strong>{{ userDashboardData.activeBookings }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Vehicles</span>
+          <strong>{{ userDashboardData.registeredVehicles }}</strong>
+        </div>
+        <div class="summary-row">
+          <span>Available lots</span>
+          <strong>{{ userDashboardData.availableLots }}</strong>
         </div>
       </div>
     </div>

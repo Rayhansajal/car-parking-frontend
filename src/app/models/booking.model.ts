@@ -17,12 +17,17 @@ export interface Booking {
   slotId?: number;
   slotNo?: string;
   vehicleNumber?: string;
+  vehiclePlate?: string;
   licensePlate?: string;
   status: BookingStatus;
   startTime: string;
   endTime: string;
+  scheduledCheckIn?: string;
+  scheduledCheckOut?: string;
   checkInTime?: string;
   checkOutTime?: string;
+  actualCheckIn?: string;
+  actualCheckOut?: string;
   totalAmount?: number;
   totalFee?: number;
   createdAt?: string;
