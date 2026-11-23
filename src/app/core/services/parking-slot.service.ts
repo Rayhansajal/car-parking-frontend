@@ -8,7 +8,7 @@ import { ParkingSlot, ParkingSlotRequestDTO } from '../../models/parking-slot.mo
   providedIn: 'root'
 })
 export class ParkingSlotService {
-  private apiUrl = '${environment.apiUrl}/api/slots';
+private apiUrl = `${environment.apiUrl}/api/slots`;
 
   constructor(private http: HttpClient) {}
 
